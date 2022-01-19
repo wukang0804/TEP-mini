@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<web-view src="https://h5.tecprove.com" @message="getH5Message"></web-view>
+		<web-view :src="webViewUrl" @message="getH5Message"></web-view>
 	</view>
 </template>
 
@@ -13,9 +13,14 @@
 				sharePath:'',// 分享路径
 				shareImg:'',// 分享图片
 				shareType:'',// 分享类型
+				webViewUrl:'',
 			}
 		},
-		onLoad() {
+		onLoad(e) {
+			this.webViewUrl = 'http://192.168.8.227:3000/';
+			if(e.payBackType && e.payBackType>0){
+				this.webViewUrl = `http://192.168.8.227:3000/payH5Confirm`;
+			}
 			wx.showShareMenu({
 			  withShareTicket: true,
 			  menus: ['shareAppMessage', 'shareTimeline']
