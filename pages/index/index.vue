@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<web-view :src="webViewUrl" @message="getH5Message"></web-view>
+		<web-view v-if="showWebView" :src="webViewUrl" @message="getH5Message"></web-view>
 	</view>
 </template>
 
@@ -14,16 +14,28 @@
 				shareImg:'',// 分享图片
 				shareType:'',// 分享类型
 				webViewUrl:'',
+				showWebView:false,
+				wxCode:'',
 			}
 		},
 		onLoad(e) {
-			this.webViewUrl = 'http://192.168.8.227:3000/';
+			let that = this;
+			this.showWebView = false;
+			this.webViewUrl = 'http://192.168.3.4:3000/';
 			if(e.payBackType && e.payBackType>0){
-				this.webViewUrl = `http://192.168.8.227:3000/payH5Confirm`;
+				this.webViewUrl = `http://192.168.3.4:3000/payH5Confirm`;
 			}
 			wx.showShareMenu({
 			  withShareTicket: true,
 			  menus: ['shareAppMessage', 'shareTimeline']
+			});
+			wx.login({
+				success(e){
+					// console.log(e.code)
+					that.wxCode = e.code;
+					that.webViewUrl = that.webViewUrl + '?wxMiniCode='+that.wxCode
+					that.showWebView = true;
+				}
 			})
 		},
 		methods: {
